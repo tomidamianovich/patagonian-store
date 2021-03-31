@@ -5,8 +5,11 @@ import {
 
 const styles = (theme: Theme) =>
   createStyles({
+    table: {
+      minWidth: 700,
+    },
     wrapper: {
-      
+      padding: '2rem 5rem'
     }
   });
 

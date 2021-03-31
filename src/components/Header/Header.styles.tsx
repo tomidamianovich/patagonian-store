@@ -23,6 +23,20 @@ const styles = (theme: Theme) =>
     menu: {
       padding: '1rem',
       display: 'flex',
+      marginBottom: '1.5rem',
+      boxShadow: '0 0 6px 1px #a5a5a5',
+      '& button': {
+        backgroundColor: '#d8d8d8',
+        color: '#383838',
+      },
+      '& #store-name': {
+        fontSize: '1.8rem',
+        // backgroundColor: '#046cfc',
+        display: 'flex',
+        marginLeft: 'auto',
+        color: '#046cfc',
+        marginRight: 0
+      }
     },
     link: {
       textDecoration: 'none',

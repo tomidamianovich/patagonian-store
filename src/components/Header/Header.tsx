@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from 'react'
 import Button from '@material-ui/core/Button';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -53,6 +53,9 @@ const Header: React.FC<Props> = ({
       >
         { listMenuItems }
       </Menu>
+      <span id="store-name">
+        Patagonian Store
+      </span>
     </div>
   );
 }
