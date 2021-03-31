@@ -1,4 +1,10 @@
-export const images = [
+import { 
+  ProductType,
+  ImageType,
+  PersonalDataType 
+  } from "./type"
+
+export const images: ImageType[] = [
   {
     title: 'baboon',
     url: 'https://homepages.cae.wisc.edu/~ece533/images/baboon.png'
@@ -29,7 +35,16 @@ export const images = [
   }
 ]
 
-export const store = [
+export const personalData:PersonalDataType = {
+  name: 'Tomás Damianovich Reddy',
+  location: 'La Plata',
+  birthday: new Date(1994,12,26),
+  linkedIn: 'tomasdr',
+  mail: 'tomasdamianovich@gmail.com',
+  tel: '2216261952'
+}
+
+export const products: ProductType[] = [
   {
     number: 1003,
     name: 'Green pencil',

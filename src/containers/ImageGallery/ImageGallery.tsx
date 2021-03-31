@@ -4,11 +4,10 @@ import {
 	WithStyles
 } from '@material-ui/core/styles';
 import styles from './ImageGallery.styles'
-import Grid from '@material-ui/core/Grid';
-import Button from '@material-ui/core/Button';
+import { Grid, Button } from '@material-ui/core';
 import ImagesRow from '../../components/ImagesRow/ImagesRow'
-import { ImageType } from '../../utils/type'
-import { images } from '../../utils/store'
+import { ImageType, CombinedState } from '../../utils/type'
+import { useSelector } from 'react-redux'
 
 type Props = WithStyles<typeof styles>;
 
@@ -20,10 +19,11 @@ type Props = WithStyles<typeof styles>;
 const ImageGallery: React.FC<Props> = ({
 	classes
 }) => {
+	const images:ImageType[] = useSelector((state:CombinedState) => state.ImageReducers)
 
 	const imagesToChunks = (images:ImageType[], imagesPerRow:number = 3) => {
 		// This function will returns an array of the images separated in chunks
-		if (imagesPerRow === 0) return [] // Avoiding division by zero
+		if (imagesPerRow === 0 || !images.length) return [] // Avoiding division by zero
 		return images.reduce((resultArray:any[], item:ImageType, index:number) => {
 			const chunkIndex = Math.floor(index/imagesPerRow) // items per chunk   
 			if(!resultArray[chunkIndex])
@@ -39,7 +39,9 @@ const ImageGallery: React.FC<Props> = ({
 				Add Image
 			</Button>
       <Grid container spacing={1} className={classes.grid}>
-				{ imagesToChunks(images).map((image:ImageType[]) => <ImagesRow images={image} /> )}
+				{ imagesToChunks(images).map((image:ImageType[], index) => 
+					<ImagesRow images={image} key={index} />
+				)}
       </Grid>
     </div>
 	);
