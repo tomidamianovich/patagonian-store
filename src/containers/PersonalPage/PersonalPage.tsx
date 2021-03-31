@@ -3,13 +3,18 @@ import {
 	WithStyles
 } from '@material-ui/core/styles';
 import styles from './PersonalPage.styles'
-import Card from '@material-ui/core/Card';
-import CardActionArea from '@material-ui/core/CardActionArea';
-import CardActions from '@material-ui/core/CardActions';
-import CardContent from '@material-ui/core/CardContent';
-import CardMedia from '@material-ui/core/CardMedia';
-import Button from '@material-ui/core/Button';
-import Typography from '@material-ui/core/Typography';
+import { 
+  Card,
+  CardActionArea,
+  CardActions,
+  CardContent,
+  Button,
+  Typography,
+  CardMedia,
+  Link
+} from '@material-ui/core';
+import { PersonalDataType, CombinedState } from '../../utils/type'
+import { useSelector } from 'react-redux'
 
 type Props = {} & WithStyles<typeof styles>;
 
@@ -21,6 +26,11 @@ type Props = {} & WithStyles<typeof styles>;
 const PersonalPage: React.FC<Props> = ({
 	classes
 }) => {
+const preventDefault = (event: React.SyntheticEvent) => event.preventDefault();
+
+const personalData:PersonalDataType = useSelector((state:CombinedState) => state.PersonalDataReducers)
+
+const  { name, mail, tel, linkedIn, birthday, location } = personalData
 
 const RowData = (props:any)  => {
   return (
@@ -35,6 +45,15 @@ const RowData = (props:any)  => {
   )
 }
 
+const getLinkedInPath = (profile:string) => {
+  return `https://www.linkedin.com/in/${profile}/`
+}
+
+const calcAge = (dateString:Date) => {
+  var birthday = +new Date(dateString);
+  return `${~~((Date.now() - birthday) / (31557600000))} years old`;;
+}
+
 return (
 		<div className={classes.wrapper} data-testid="personal-page-wrapper">
 			<Card className={classes.root}>
@@ -46,18 +65,27 @@ return (
           />
           <CardContent>
             <Typography gutterBottom variant="h5" component="h2" >
-              Tomas Damianovich
+              {name}
             </Typography>
-            <RowData title="Location" value="La Plata, Buenos Aires, Arg." />
-            <RowData title="Age" value="26 years old" />
-            <RowData title="LinkedIn Profile" value="/tomasdr" />
-            <RowData title="Mail" value="tomasdamianovich@gmail.com" />
-            <RowData title="Tel" value="2216261952" />
+            <RowData title="Location" value={location} />
+            <RowData title="Age" value={calcAge(birthday)} />
+            <Typography variant="body1" color="textPrimary" component="p" display="inline" align="left">
+              LinkedIn Profile:
+            </Typography>
+            <Typography variant="body2" color="textPrimary" component="p" display="inline" align="left">
+              <Link href={getLinkedInPath(linkedIn)} onClick={preventDefault}>
+                {` /${linkedIn}`}
+              </Link>
+            </Typography>
+            <RowData title="Mail" value={mail} />
+            <RowData title="Tel" value={tel} />
           </CardContent>
         </CardActionArea>
         <CardActions>
           <Button size="small" color="primary">
-            Contact
+              <Link href={`mailto:${mail}`} onClick={preventDefault}>
+                Contact
+              </Link>
           </Button>
         </CardActions>
       </Card>

@@ -1,8 +1,5 @@
 import React from 'react'
-import Paper from '@material-ui/core/Paper';
-import Grid from '@material-ui/core/Grid';
-import Button from '@material-ui/core/Button';
-import CardMedia from '@material-ui/core/CardMedia';
+import { Paper, Grid, Button, CardMedia } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import styles from './ImagesRow.styles'
 import {
@@ -19,11 +16,10 @@ const ImagesRow: React.FC<Props> = ({
 	classes,
   images
 }) => {
-    debugger
     return (
     <Grid container item xs={12} spacing={3}>
-      { images.map((image:ImageType) =>
-        <Grid item xs={4}>
+      { images.map((image:ImageType, index) =>
+        <Grid item xs={4} key={index}>
           <Paper className={classes.paper}>
             <Button size="small" className={classes.closeButton}>
               <CloseIcon />

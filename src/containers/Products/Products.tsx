@@ -5,7 +5,6 @@ import {
 	WithStyles
 } from '@material-ui/core/styles';
 import styles from './Products.styles'
-import { store } from '../../utils/store'
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -13,7 +12,8 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
-import { ProductType } from '../../utils/type'
+import { useSelector } from 'react-redux'
+import { ProductType, CombinedState } from '../../utils/type'
 
 type Props = {} & WithStyles<typeof styles>;
 
@@ -25,7 +25,7 @@ type Props = {} & WithStyles<typeof styles>;
 const Products: React.FC<Props> = ({
 	classes
 }) => {
-	const rows: ProductType[] = store
+	const rows:ProductType[] = useSelector((state:CombinedState) => state.ProductReducers)
 	
 	const StyledTableCell = withStyles((theme: Theme) =>
 		createStyles({

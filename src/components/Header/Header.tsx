@@ -1,7 +1,5 @@
 import React, { useState } from 'react'
-import Button from '@material-ui/core/Button';
-import Menu from '@material-ui/core/Menu';
-import MenuItem from '@material-ui/core/MenuItem';
+import { Button, Menu, MenuItem } from '@material-ui/core';
 import styles from './Header.styles';
 import {
   withStyles,
