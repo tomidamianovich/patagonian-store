@@ -20,6 +20,14 @@ const styles = (theme: Theme) =>
       margin: '1rem auto auto auto'
     },
     wrapper: {
+    },
+    spinner: {
+      padding: '1rem',
+      color: '#f1870d'
+    },
+    contactButton: {
+      display: 'flex',
+      alignItems: 'right'
     }
   });
 

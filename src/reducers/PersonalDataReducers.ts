@@ -16,7 +16,8 @@ const reducer = (
         birthday: action.payload.birthday,
         linkedIn: action.payload.linkedIn,
         mail: action.payload.mail,
-        tel: action.payload.tel
+        tel: action.payload.tel,
+        photoUrl: action.payload.photoUrl
       }
       return newPersonalData
   }

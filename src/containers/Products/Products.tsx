@@ -5,15 +5,19 @@ import {
 	WithStyles
 } from '@material-ui/core/styles';
 import styles from './Products.styles'
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableContainer from '@material-ui/core/TableContainer';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
-import Paper from '@material-ui/core/Paper';
-import { useSelector } from 'react-redux'
-import { ProductType, CombinedState } from '../../utils/type'
+import { 
+	Table,
+	TableBody,
+	TableCell,
+	TableContainer,
+	TableHead,
+	TableRow,
+	Paper,
+	CircularProgress
+} from '@material-ui/core';
+import { ProductType } from '../../utils/type'
+import { db } from '../../config'
+import React, { useState, useEffect } from 'react';
 
 type Props = {} & WithStyles<typeof styles>;
 
@@ -25,7 +29,18 @@ type Props = {} & WithStyles<typeof styles>;
 const Products: React.FC<Props> = ({
 	classes
 }) => {
-	const rows:ProductType[] = useSelector((state:CombinedState) => state.ProductReducers)
+	const [products,setProducts] = useState<ProductType[] | []>([])
+	
+	const fetchProducts = async() =>{
+		const nameRef = db.ref().child('products')
+		nameRef.on('value', snapshot => setProducts(snapshot.val()))
+	}
+
+	useEffect(() => {
+    fetchProducts();
+  }, [])
+
+	// const rows:ProductType[] = useSelector((state:CombinedState) => state.ProductReducers)
 	
 	const StyledTableCell = withStyles((theme: Theme) =>
 		createStyles({
@@ -68,23 +83,26 @@ const Products: React.FC<Props> = ({
 						</TableRow>
 					</TableHead>
 					<TableBody>
-						{rows.map((row) => (
-							<StyledTableRow key={row.name}>
-								<StyledTableCell component="th" scope="row">{row.name}</StyledTableCell>
-								<StyledTableCell align="right">{row.number}</StyledTableCell>
-								<StyledTableCell align="right">{row.date}</StyledTableCell>
-								<StyledTableCell align="right">{row.sku}</StyledTableCell>
-								<StyledTableCell align="right">{row.weight}</StyledTableCell>
-								<StyledTableCell align="right">{row.height}</StyledTableCell>
-								<StyledTableCell align="right">{row.width}</StyledTableCell>
-								<StyledTableCell align="right">{row.origin}</StyledTableCell>
-								<StyledTableCell align="right">{row.minimum}</StyledTableCell>
-								<StyledTableCell align="right">{row.delay}</StyledTableCell>
-							</StyledTableRow>
-						))}
+						{ products && products.length > 0 && 
+							products.map((row:any) => (
+								<StyledTableRow key={row.name}>
+									<StyledTableCell component="th" scope="row">{row.name}</StyledTableCell>
+									<StyledTableCell align="right">{row.number}</StyledTableCell>
+									<StyledTableCell align="right">{row.date}</StyledTableCell>
+									<StyledTableCell align="right">{row.sku}</StyledTableCell>
+									<StyledTableCell align="right">{row.weight}</StyledTableCell>
+									<StyledTableCell align="right">{row.height}</StyledTableCell>
+									<StyledTableCell align="right">{row.width}</StyledTableCell>
+									<StyledTableCell align="right">{row.origin}</StyledTableCell>
+									<StyledTableCell align="right">{row.minimum}</StyledTableCell>
+									<StyledTableCell align="right">{row.delay}</StyledTableCell>
+								</StyledTableRow>
+							))
+						}
 					</TableBody>
 				</Table>
 			</TableContainer>
+			{ products.length === 0 && <CircularProgress disableShrink className={classes.spinner} /> }
 		</div>
 	);
 }

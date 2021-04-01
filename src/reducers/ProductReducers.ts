@@ -1,8 +1,7 @@
 import * as actionTypes from "../actionTypes/ProductTypes"
 import { ProductType, ProductAction } from '../utils/type'
-import { products } from '../utils/store'
 
-const initialState:ProductType[] = products
+const initialState:ProductType[] = []
 
 const reducer = (
   state: ProductType[] = initialState,
@@ -10,7 +9,7 @@ const reducer = (
 ): ProductType[] => {
   switch (action.type) {
     case actionTypes.ADD_PRODUCT:
-      const newProduct: ProductType = {
+      const newProduct: any = {
         number: action.payload.number,
         name: action.payload.name,
         date: action.payload.date,

@@ -45,9 +45,9 @@ export type PersonalDataType = {
   location: string,
   birthday: date,
   linkedIn: string,
-  location: string,
   mail: string,
-  tel: string
+  tel: string,
+  photoUrl: string
 }
 
 export type PersonalDataAction = {

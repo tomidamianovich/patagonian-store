@@ -10,6 +10,10 @@ const styles = (theme: Theme) =>
     },
     wrapper: {
       padding: '2rem 5rem'
+    },
+    spinner: {
+      padding: '1rem',
+      color: '#f1870d'
     }
   });
 
