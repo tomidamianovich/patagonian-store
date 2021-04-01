@@ -41,7 +41,8 @@ export const personalData:PersonalDataType = {
   birthday: new Date(1994,12,26),
   linkedIn: 'tomasdr',
   mail: 'tomasdamianovich@gmail.com',
-  tel: '2216261952'
+  tel: '2216261952',
+  photoUrl: ''
 }
 
 export const products: ProductType[] = [

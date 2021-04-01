@@ -5,7 +5,7 @@ import {
   withStyles,
   WithStyles
 } from '@material-ui/core/styles';
-import { Link } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 
 
 type menuOption = {
@@ -21,6 +21,7 @@ const Header: React.FC<Props> = ({
 	classes,
   options
 }) => {
+  const history = useHistory();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -29,11 +30,14 @@ const Header: React.FC<Props> = ({
 
   const handleClose = () => setAnchorEl(null);
 
+  const redirectToLink = (path:string) => {
+    const link = `/${path}`
+    history.push(link);
+  }
+  
   const listMenuItems = options.map((option:menuOption, index) =>
-    <MenuItem key={index}>
-      <Link to={`/${option.path}`} className={classes.link}>
-        {option.text}
-      </Link>
+    <MenuItem key={index} onClick={()=>redirectToLink(option.path)}>
+      {option.text}
     </MenuItem>
   );
 

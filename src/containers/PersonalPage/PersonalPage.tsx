@@ -11,10 +11,12 @@ import {
   Button,
   Typography,
   CardMedia,
-  Link
+  Link,
+  CircularProgress
 } from '@material-ui/core';
-import { PersonalDataType, CombinedState } from '../../utils/type'
-import { useSelector } from 'react-redux'
+import { PersonalDataType } from '../../utils/type'
+import { db, storage } from '../../config'
+import React, { useState, useEffect, useCallback } from 'react';
 
 type Props = {} & WithStyles<typeof styles>;
 
@@ -26,10 +28,45 @@ type Props = {} & WithStyles<typeof styles>;
 const PersonalPage: React.FC<Props> = ({
 	classes
 }) => {
-const preventDefault = (event: React.SyntheticEvent) => event.preventDefault();
+const placeholderPersonalData = { 
+  name: '',
+  mail: '', 
+  tel: '', 
+  linkedIn: '', 
+  birthday: '', 
+  location: '',
+  photoUrl: ''
+} 
 
-const personalData:PersonalDataType = useSelector((state:CombinedState) => state.PersonalDataReducers)
+const [personalData, setPersonalData] = useState<PersonalDataType>(placeholderPersonalData)
+const [profilePictureUrl, setProfilePictureUrl] = useState()
+const [loadingPersonalData, setLoadingPersonalData] = useState<boolean>(true)
 
+const getProfilePicture = useCallback( (url:string) => {
+  if (url === '' || profilePictureUrl) return
+  const starsRef = storage.refFromURL(url);
+  // Get the download URL
+  starsRef.getDownloadURL()
+    .then((url) => setProfilePictureUrl(url)) // Get the profile photo from firebase storage
+    .catch((error) => console.log(error)) // Printing error in the console
+    .finally(() => setLoadingPersonalData(false)); // Showing the card
+}, [profilePictureUrl])
+
+const fetchPersonalData = useCallback( async() => {
+  const nameRef = db.ref().child('personalData')
+  setLoadingPersonalData(true)
+  nameRef.on('value', snapshot => {
+    const { photoUrl } = snapshot.val()
+    setPersonalData(snapshot.val())
+    photoUrl && getProfilePicture(photoUrl)
+  })
+}, [getProfilePicture])
+
+useEffect(() => {
+  fetchPersonalData();
+}, [fetchPersonalData])
+
+// const personalData:PersonalDataType = useSelector((state:CombinedState) => state.PersonalDataReducers)
 const  { name, mail, tel, linkedIn, birthday, location } = personalData
 
 const RowData = (props:any)  => {
@@ -45,24 +82,26 @@ const RowData = (props:any)  => {
   )
 }
 
-const getLinkedInPath = (profile:string) => {
-  return `https://www.linkedin.com/in/${profile}/`
-}
+const getLinkedInPath = (profile:string) => `https://www.linkedin.com/in/${profile}/`
 
 const calcAge = (dateString:Date) => {
-  var birthday = +new Date(dateString);
+  const birthday = +new Date(dateString);
   return `${~~((Date.now() - birthday) / (31557600000))} years old`;;
 }
 
 return (
-		<div className={classes.wrapper} data-testid="personal-page-wrapper">
-			<Card className={classes.root}>
+  <div className={classes.wrapper} data-testid="personal-page-wrapper">
+    { loadingPersonalData && <CircularProgress disableShrink className={classes.spinner} /> }
+    { !loadingPersonalData &&
+      <Card className={classes.root}>
         <CardActionArea>
-          <CardMedia
-            className={classes.media}
-            image="https://lh3.googleusercontent.com/a-/AOh14GjgCvchb4v_1xvmtAetJBvjfAFF5kVx9jrmjAtF1A=s96-c-rg-br100"
-            title="Contemplative Reptile"
-          />
+          { profilePictureUrl &&
+            <CardMedia
+              className={classes.media}
+              image={profilePictureUrl}
+              title="Contemplative Reptile"
+            />
+          }
           <CardContent>
             <Typography gutterBottom variant="h5" component="h2" >
               {name}
@@ -73,7 +112,7 @@ return (
               LinkedIn Profile:
             </Typography>
             <Typography variant="body2" color="textPrimary" component="p" display="inline" align="left">
-              <Link href={getLinkedInPath(linkedIn)} onClick={preventDefault}>
+              <Link href={getLinkedInPath(linkedIn)} target="_blank" >
                 {` /${linkedIn}`}
               </Link>
             </Typography>
@@ -82,15 +121,16 @@ return (
           </CardContent>
         </CardActionArea>
         <CardActions>
-          <Button size="small" color="primary">
-              <Link href={`mailto:${mail}`} onClick={preventDefault}>
+          <Button size="small" color="primary" className={classes.contactButton}>
+              <Link href={`mailto:${mail}`} target="_blank">
                 Contact
               </Link>
           </Button>
         </CardActions>
       </Card>
-		</div>
-	);
+    }
+  </div>
+);
 }
 
 export default withStyles(styles)(PersonalPage);
