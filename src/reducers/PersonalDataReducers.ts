@@ -1,15 +1,24 @@
 import * as actionTypes from "../actionTypes/PersonalDataTypes"
 import { PersonalDataType, PersonalDataAction } from '../utils/type'
-import { personalData } from '../utils/store'
 
-const initialState:PersonalDataType = personalData
+export const placeholderPersonalData:PersonalDataType = { 
+  name: '',
+  mail: '', 
+  tel: '', 
+  linkedIn: '', 
+  birthday: '', 
+  location: '',
+  photoUrl: ''
+} 
+
+const initialState:PersonalDataType = placeholderPersonalData
 
 const reducer = (
   state: PersonalDataType = initialState,
   action: PersonalDataAction
 ): PersonalDataType => {
   switch (action.type) {
-    case actionTypes.EDIT_PERSONAL_DATA:
+    case actionTypes.SET_PERSONAL_DATA:
       const newPersonalData: PersonalDataType = {
         name: action.payload.name,
         location: action.payload.location,
