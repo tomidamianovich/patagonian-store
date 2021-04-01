@@ -15,9 +15,11 @@ import {
 	Paper,
 	CircularProgress
 } from '@material-ui/core';
-import { ProductType } from '../../utils/type'
+import { ProductType, CombinedState } from '../../utils/type'
 import { db } from '../../config'
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { setProducts } from "../../actions/ProductActions"
 
 type Props = {} & WithStyles<typeof styles>;
 
@@ -29,16 +31,23 @@ type Props = {} & WithStyles<typeof styles>;
 const Products: React.FC<Props> = ({
 	classes
 }) => {
-	const [products,setProducts] = useState<ProductType[] | []>([])
-	
-	const fetchProducts = async() =>{
+	// const [products,setProducts] = useState<ProductType[] | []>([])
+	const dispatch = useDispatch()
+	const products:ProductType[]  = useSelector((state:CombinedState) => state.ProductReducers)
+	const [loadingProducts, setLoadingProducts] = useState<boolean>(true)
+
+	const fetchProducts = useCallback(async() =>{
 		const nameRef = db.ref().child('products')
-		nameRef.on('value', snapshot => setProducts(snapshot.val()))
-	}
+		nameRef.on('value', snapshot => {
+			debugger
+			dispatch(setProducts(snapshot.val()))
+			setLoadingProducts(false)
+		})
+	}, [dispatch])
 
 	useEffect(() => {
-    fetchProducts();
-  }, [])
+		!products.length ? fetchProducts() : setLoadingProducts(false);
+  }, [products, fetchProducts])
 
 	// const rows:ProductType[] = useSelector((state:CombinedState) => state.ProductReducers)
 	
@@ -83,7 +92,7 @@ const Products: React.FC<Props> = ({
 						</TableRow>
 					</TableHead>
 					<TableBody>
-						{ products && products.length > 0 && 
+						{ !loadingProducts && 
 							products.map((row:any) => (
 								<StyledTableRow key={row.name}>
 									<StyledTableCell component="th" scope="row">{row.name}</StyledTableCell>
@@ -102,7 +111,7 @@ const Products: React.FC<Props> = ({
 					</TableBody>
 				</Table>
 			</TableContainer>
-			{ products.length === 0 && <CircularProgress disableShrink className={classes.spinner} /> }
+			{ loadingProducts && <CircularProgress disableShrink className={classes.spinner} /> }
 		</div>
 	);
 }

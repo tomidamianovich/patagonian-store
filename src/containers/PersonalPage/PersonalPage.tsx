@@ -15,8 +15,12 @@ import {
   CircularProgress
 } from '@material-ui/core';
 import { PersonalDataType } from '../../utils/type'
+import { CombinedState } from '../../utils/type'
 import { db, storage } from '../../config'
 import React, { useState, useEffect, useCallback } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { setPersonalData } from "../../actions/PersonalDataActions"
+import { placeholderPersonalData } from "../../reducers/PersonalDataReducers"
 
 type Props = {} & WithStyles<typeof styles>;
 
@@ -28,19 +32,11 @@ type Props = {} & WithStyles<typeof styles>;
 const PersonalPage: React.FC<Props> = ({
 	classes
 }) => {
-const placeholderPersonalData = { 
-  name: '',
-  mail: '', 
-  tel: '', 
-  linkedIn: '', 
-  birthday: '', 
-  location: '',
-  photoUrl: ''
-} 
 
-const [personalData, setPersonalData] = useState<PersonalDataType>(placeholderPersonalData)
 const [profilePictureUrl, setProfilePictureUrl] = useState()
 const [loadingPersonalData, setLoadingPersonalData] = useState<boolean>(true)
+const dispatch = useDispatch()
+const personalData:PersonalDataType  = useSelector((state:CombinedState) => state.PersonalDataReducers)
 
 const getProfilePicture = useCallback( (url:string) => {
   if (url === '' || profilePictureUrl) return
@@ -49,22 +45,28 @@ const getProfilePicture = useCallback( (url:string) => {
   starsRef.getDownloadURL()
     .then((url) => setProfilePictureUrl(url)) // Get the profile photo from firebase storage
     .catch((error) => console.log(error)) // Printing error in the console
-    .finally(() => setLoadingPersonalData(false)); // Showing the card
-}, [profilePictureUrl])
-
-const fetchPersonalData = useCallback( async() => {
-  const nameRef = db.ref().child('personalData')
+  }, [profilePictureUrl])
+  
+  const fetchPersonalData = useCallback( async() => {
+    const nameRef = db.ref().child('personalData')
   setLoadingPersonalData(true)
   nameRef.on('value', snapshot => {
     const { photoUrl } = snapshot.val()
-    setPersonalData(snapshot.val())
+    setLoadingPersonalData(false); // Showing the card
+    dispatch(setPersonalData(snapshot.val()))
     photoUrl && getProfilePicture(photoUrl)
   })
-}, [getProfilePicture])
+}, [getProfilePicture, dispatch])
 
 useEffect(() => {
-  fetchPersonalData();
-}, [fetchPersonalData])
+  // Cheking if the info was not already loaded in the past.
+  if (personalData.name === placeholderPersonalData.name) {
+    fetchPersonalData();
+  } else {
+    getProfilePicture(personalData.photoUrl)
+    setLoadingPersonalData(false);
+  }
+}, [fetchPersonalData, personalData, getProfilePicture])
 
 // const personalData:PersonalDataType = useSelector((state:CombinedState) => state.PersonalDataReducers)
 const  { name, mail, tel, linkedIn, birthday, location } = personalData
@@ -101,6 +103,9 @@ return (
               image={profilePictureUrl}
               title="Contemplative Reptile"
             />
+          }
+          { !profilePictureUrl &&
+            <CircularProgress disableShrink className={classes.spinner} />
           }
           <CardContent>
             <Typography gutterBottom variant="h5" component="h2" >

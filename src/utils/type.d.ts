@@ -33,7 +33,7 @@ export type ProductState = ProductType[]
 
 export type ProductAction = {
   type: string
-  payload: ProductType
+  payload: ProductState
 }
 
 export type ProductDispatchType = (args: ProductAction) => ProductAction
