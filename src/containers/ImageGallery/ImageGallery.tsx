@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback }  from 'react'
 import { withStyles, WithStyles } from '@material-ui/core/styles';
 import styles from './ImageGallery.styles'
 import { Grid } from '@material-ui/core';
+import { Alert, AlertTitle } from '@material-ui/lab';
 import ImagesRow from '../../components/ImagesRow/ImagesRow'
 import { ImageType, CombinedState } from '../../utils/type'
 import { useSelector, useDispatch } from 'react-redux'
@@ -21,11 +22,15 @@ const ImageGallery: React.FC<Props> = ({
 	classes
 }) => {
 	const [loadingImages, setLoadingImages] = useState<boolean>(false)
+	const [alreadyRequestedImages, setAlreadyRequestedImages] = useState<boolean>(false)
 	const dispatch = useDispatch()
 	const images = useSelector((state:CombinedState) => state.ImageReducers)
 
+	/*
+	 This function will returns an array of the images separated in chunks of three images,
+		the chunks are used in the grid that shows the images
+	*/
 	const imagesToChunks = (images:ImageType[], imagesPerRow:number = 3) => {
-		// This function will returns an array of the images separated in chunks
 		if (imagesPerRow === 0 || !images.length) return [] // Avoiding division by zero
 		return images.reduce((resultArray:any[], item:ImageType, index:number) => {
 			const chunkIndex = Math.floor(index/imagesPerRow) // items per chunk   
@@ -36,9 +41,20 @@ const ImageGallery: React.FC<Props> = ({
 		}, [])
 	} 
 
-	const getImagesFromStorage =  useCallback((imagesArray:ImageType[]) => {
-    var starsRef:Array<Promise<string>> = []
-		const imagesWithStorageUrls = [...imagesArray]
+	/*
+	 This function will request the image url of the storage, we have in the realtime
+	 database the reference url so with that one we need to request the storage url.
+	*/
+	const getImagesFromStorage =  useCallback((imagesObject:ImageType[]) => {
+    let starsRef:Array<Promise<string>> = []
+		if (!imagesObject) {
+			dispatch(setImages([]));
+			setAlreadyRequestedImages(true);
+			setLoadingImages(false); // Showing the card
+			return
+		}
+		const imagesArray = Object.values(imagesObject)
+		const imagesWithStorageUrls = Object.values(imagesArray)
     imagesArray.forEach(image => {
       starsRef = [
         ...starsRef,
@@ -49,30 +65,36 @@ const ImageGallery: React.FC<Props> = ({
 			imagesWithStorageUrls.forEach((image, index) => {
 				image.url = res[index]
 			});
+			setAlreadyRequestedImages(true);
 			dispatch(setImages(imagesWithStorageUrls));
 			setLoadingImages(false); // Showing the card
     })
   }, [dispatch])
 
+	/*	This function request array images data [(id, title, urls),...] */
 	const fetchImagesData = useCallback(async() => {
 		const nameRef= db.ref().child('images')
 		nameRef.on('value', snapshot => {
-			const images = snapshot.val().filter((img:ImageType) => img)
+			const images = snapshot.val()
 			getImagesFromStorage(images)
 		})
 	}, [getImagesFromStorage])
-
+	
 	useEffect(() => {
 		// Cheking if the info was not already loaded in the past.
-		if (!images.length && !loadingImages ) {
+		if (!alreadyRequestedImages && !loadingImages ) {
 			setLoadingImages(true)
 			fetchImagesData()
 		}
-	}, [fetchImagesData, images, loadingImages])
-
+	}, [fetchImagesData, alreadyRequestedImages, loadingImages])
+	
+	/*	
+		This function will check the latest index in the database in order that when
+		the child component add a new image it uses the following one
+	*/
 	const getIndexValue = () => {
 		if (!images.length) return 0
-		var greatherId = -Infinity
+		let greatherId = -Infinity
 		images.forEach(image => {
       if(image.id > greatherId) {
 				greatherId = image.id
@@ -84,13 +106,17 @@ const ImageGallery: React.FC<Props> = ({
 	return (
 		<div className={classes.root}>
 			<AddImage lastIndex={getIndexValue()}/>
-			{ !loadingImages && 
-				<Grid container spacing={1} className={classes.grid}>
-					{ imagesToChunks(images).map((image:ImageType[], index) => 
-						<ImagesRow images={image} key={index} />
-					)}
-				</Grid>
-			} 
+			{ !loadingImages && !images.length &&
+				<Alert severity="info" className={classes.alert}>
+					<AlertTitle>The Image Gallery is currently empty</AlertTitle>
+					Add the first image with the <strong>Add Image Form</strong> above!
+				</Alert>
+			}
+			<Grid container spacing={1} className={classes.grid}>
+				{ imagesToChunks(images).map((image:ImageType[], index) => 
+					<ImagesRow images={image} key={index} />
+				)}
+			</Grid>
 			<LoadingSpinner isLoading={loadingImages} />
     </div>
 	);
