@@ -31,11 +31,12 @@ type Props = {} & WithStyles<typeof styles>;
 const Products: React.FC<Props> = ({
 	classes
 }) => {
-	// const [products,setProducts] = useState<ProductType[] | []>([])
 	const dispatch = useDispatch()
 	const products:ProductType[]  = useSelector((state:CombinedState) => state.ProductReducers)
 	const [loadingProducts, setLoadingProducts] = useState<boolean>(true)
 
+	/*  Function that will request products to the realtime db and dispatch the actions
+	to save the products in the redux state */
 	const fetchProducts = useCallback(async() =>{
 		const nameRef = db.ref().child('products')
 		nameRef.on('value', snapshot => {

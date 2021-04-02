@@ -34,6 +34,10 @@ const [loadingPersonalData, setLoadingPersonalData] = useState<boolean>(true)
 const dispatch = useDispatch()
 const personalData:PersonalDataType  = useSelector((state:CombinedState) => state.PersonalDataReducers)
 
+/*
+* Function that request the profile picture storage url of the user 
+* and saves that one with the useSate hook
+*/
 const getProfilePicture = useCallback( (url:string) => {
   if (url === '' || profilePictureUrl) return
   const starsRef = storage.refFromURL(url);
@@ -43,6 +47,7 @@ const getProfilePicture = useCallback( (url:string) => {
     .catch((error) => console.log(error)) // Printing error in the console
   }, [profilePictureUrl])
   
+/* Function that request the profile picture data from realtime db */
 const fetchPersonalData = useCallback( async() => {
   const nameRef = db.ref().child('personalData')
   setLoadingPersonalData(true)
@@ -64,7 +69,6 @@ useEffect(() => {
   }
 }, [fetchPersonalData, personalData, getProfilePicture])
 
-// const personalData:PersonalDataType = useSelector((state:CombinedState) => state.PersonalDataReducers)
 const  { name, mail, tel, linkedIn, birthday, location } = personalData
 
 const RowData = (props:any)  => {
@@ -82,6 +86,7 @@ const RowData = (props:any)  => {
 
 const getLinkedInPath = (profile:string) => `https://www.linkedin.com/in/${profile}/`
 
+/* Function that will calculate age of the person with his birthday */
 const calcAge = (dateString:Date) => {
   const birthday = +new Date(dateString);
   return `${~~((Date.now() - birthday) / (31557600000))} years old`;;

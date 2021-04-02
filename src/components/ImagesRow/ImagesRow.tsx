@@ -17,6 +17,10 @@ type Props = {
   images: ImageType[]
 } & WithStyles<typeof styles>;
 
+/*
+  Component that shows images rows, part of the imagegallery grid
+*/
+
 const ImagesRow: React.FC<Props> = ({
   classes,
   images
@@ -25,6 +29,7 @@ const ImagesRow: React.FC<Props> = ({
   const [errorImageStorageUrl, setErrorImageStorageUrl] = useState('')
   const [loadingErrorImageUrls, setLoadingErrorImageUrl] = useState(false)
 
+  // Function that request storage url of an image
   const getErrorImageFromStorage = useCallback( async (url: string) => {
     const starsRef = storage.refFromURL(url);
     // Get the download URL
@@ -47,6 +52,7 @@ const ImagesRow: React.FC<Props> = ({
     getErrorImageFromStorage
   ])
 
+  // Function that handles the remove of a image reference.
   const handleRemoveImage = (e:any, image:ImageType) => {
     e.preventDefault()
     dispatch(removeImage([image]))

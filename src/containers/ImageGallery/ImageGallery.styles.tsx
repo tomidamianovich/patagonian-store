@@ -29,6 +29,11 @@ const styles = (theme: Theme) =>
       margin: '1rem',
       boxShadow: '0 0 2px black'
     },
+    alert: {
+      margin: '0 10rem',
+      padding: '2rem',
+      boxShadow: '0 0 3px 0px rgb(13 60 97)'
+    },
     media: {
       minHeight: '10rem',
       margin: 0,

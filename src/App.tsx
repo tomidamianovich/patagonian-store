@@ -4,24 +4,11 @@ import Header from './components/Header/Header'
 import ImageGallery from './containers/ImageGallery/ImageGallery'
 import Products from './containers/Products/Products'
 import PersonalPage from './containers/PersonalPage/PersonalPage'
-import { APP_NAME } from './utils/constants'
+import { APP_NAME, MENU_OPTIONS } from './utils/constants'
 
 function App() {
 
-  const menuOptions = [
-    {
-      text: 'Personal Page',
-      path: 'personal-page'
-    },
-    {
-      text: 'Products',
-      path: 'products'
-    },
-    {
-      text: 'Image Gallery',
-      path: 'image-gallery'
-    }
-  ]
+  const menuOptions = MENU_OPTIONS
 
   return (
     <div className="App">

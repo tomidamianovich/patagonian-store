@@ -10,6 +10,11 @@ type Props = {
   isLoading: boolean
 } & WithStyles<typeof styles>;
 
+/*
+  Component that shows an spinner in the UI in order to show to the user 
+  that something is being loaded
+*/
+
 const LoadingSpinner: React.FC<Props> = ({
 	classes,
   isLoading
