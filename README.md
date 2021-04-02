@@ -53,14 +53,16 @@ Although the structure of the project is not a single answer question and that t
 1. Open a new terminal in your repositories folder
 
 1. Clone the repository in your local machine:
-  git clone https://gitlab.com/tdamianovich/patagonian-store.git
+  run "git clone https://gitlab.com/tdamianovich/patagonian-store.git"
 
-2. cd patagonian-store
+2. run "cd patagonian-store"
 
-3. npm install || yarn install
+3. run "git checkout master"
 
-4. npm start || yarn start
+4. run "npm install" || run "yarn install"
 
-5. The application will start and showed in the browser, you can use:
+6. run "npm start" || run "yarn start"
+
+  The application will start and showed in the browser, you can use:
    1. Local Development build (The one that is automatically opened) Example: http://localhost:[port]
    2. Network Url, Example: http://192.168.0.49:[port]
