@@ -9,6 +9,9 @@ import {
 import { ImageType } from '../../utils/type'
 import { storage } from '../../config'
 import { ERROR_IMAGE_URL } from '../../utils/constants'
+import { useDispatch } from 'react-redux'
+import { removeImage } from "../../actions/ImageActions"
+import { db } from '../../config'
 
 type Props = {
   images: ImageType[]
@@ -18,7 +21,7 @@ const ImagesRow: React.FC<Props> = ({
   classes,
   images
 }) => {
-  debugger
+  const dispatch = useDispatch()
   const [errorImageStorageUrl, setErrorImageStorageUrl] = useState('')
   const [loadingErrorImageUrls, setLoadingErrorImageUrl] = useState(false)
 
@@ -44,19 +47,26 @@ const ImagesRow: React.FC<Props> = ({
     getErrorImageFromStorage
   ])
 
+  const handleRemoveImage = (e:any, image:ImageType) => {
+    e.preventDefault()
+    dispatch(removeImage([image]))
+    const imagesRef = db.ref().child('images')
+    imagesRef.child(image.id.toString()).remove()
+  }
+ 
   return (
     <Grid container item xs={12} spacing={3}>
       { images.map((image: ImageType, index) =>
         <Grid item xs={4} key={index}>
           <Paper className={classes.paper}>
-            <Button size="small" className={classes.closeButton}>
+            <Button size="small" className={classes.closeButton} onClick={(e) => handleRemoveImage(e, image)}>
               <CloseIcon />
             </Button>
-              <CardMedia
-                className={classes.media}
-                image={image.url}
-                title={image.title}
-              />
+            <CardMedia
+              className={classes.media}
+              image={image.url}
+              title={image.title}
+            />
           </Paper>
         </Grid>
       )}
