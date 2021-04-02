@@ -4,6 +4,7 @@ import Header from './components/Header/Header'
 import ImageGallery from './containers/ImageGallery/ImageGallery'
 import Products from './containers/Products/Products'
 import PersonalPage from './containers/PersonalPage/PersonalPage'
+import { APP_NAME } from './utils/constants'
 
 function App() {
 
@@ -24,7 +25,7 @@ function App() {
 
   return (
     <div className="App">
-      <Header options={menuOptions} />
+      <Header options={menuOptions} appName={APP_NAME} />
       <Switch>
         <Route exact path="/personal-page" component={PersonalPage} />
         <Route path="/products" component={Products} />

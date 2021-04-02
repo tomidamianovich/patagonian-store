@@ -14,12 +14,14 @@ type menuOption = {
 }
 
 type Props = {
-  options: menuOption[]
+  options: menuOption[],
+  appName: string
 } & WithStyles<typeof styles>;
 
 const Header: React.FC<Props> = ({
 	classes,
-  options
+  options,
+  appName
 }) => {
   const history = useHistory();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -32,6 +34,7 @@ const Header: React.FC<Props> = ({
 
   const redirectToLink = (path:string) => {
     const link = `/${path}`
+    handleClose()
     history.push(link);
   }
   
@@ -56,7 +59,7 @@ const Header: React.FC<Props> = ({
         { listMenuItems }
       </Menu>
       <span id="store-name">
-        Patagonian Store
+        { appName }
       </span>
     </div>
   );

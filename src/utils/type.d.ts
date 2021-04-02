@@ -12,6 +12,11 @@ export type ImageAction = {
   payload: ImageType
 }
 
+export type ImageActionBatch = {
+  type: string
+  payload: ImageType[]
+}
+
 export type ImageDispatchType = (args: ImageAction) => ImageAction
 
 // Product Types

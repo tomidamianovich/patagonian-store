@@ -12,14 +12,14 @@ import {
 	TableContainer,
 	TableHead,
 	TableRow,
-	Paper,
-	CircularProgress
+	Paper
 } from '@material-ui/core';
 import { ProductType, CombinedState } from '../../utils/type'
 import { db } from '../../config'
 import React, { useState, useEffect, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { setProducts } from "../../actions/ProductActions"
+import LoadingSpinner from '../../components/LoadingSpinner/LoadingSpinner';
 
 type Props = {} & WithStyles<typeof styles>;
 
@@ -39,7 +39,6 @@ const Products: React.FC<Props> = ({
 	const fetchProducts = useCallback(async() =>{
 		const nameRef = db.ref().child('products')
 		nameRef.on('value', snapshot => {
-			debugger
 			dispatch(setProducts(snapshot.val()))
 			setLoadingProducts(false)
 		})
@@ -111,7 +110,7 @@ const Products: React.FC<Props> = ({
 					</TableBody>
 				</Table>
 			</TableContainer>
-			{ loadingProducts && <CircularProgress disableShrink className={classes.spinner} /> }
+			<LoadingSpinner isLoading={loadingProducts} />
 		</div>
 	);
 }

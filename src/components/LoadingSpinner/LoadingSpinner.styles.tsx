@@ -5,12 +5,12 @@ import {
 
 const styles = (theme: Theme) =>
   createStyles({
-    table: {
-      minWidth: 700,
-    },
-    wrapper: {
-      padding: '2rem 5rem'
-    },
+    spinner: {
+      display: 'block',
+      padding: '1rem',
+      color: '#f1870d',
+      margin: 'auto'
+    }
   });
 
 export default styles

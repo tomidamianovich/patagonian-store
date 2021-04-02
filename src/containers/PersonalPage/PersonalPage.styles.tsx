@@ -20,10 +20,6 @@ const styles = (theme: Theme) =>
     },
     wrapper: {
     },
-    spinner: {
-      padding: '1rem',
-      color: '#f1870d'
-    },
     contactButton: {
       display: 'flex',
       alignItems: 'right'
