@@ -1,7 +1,4 @@
-import {
-	withStyles,
-	WithStyles
-} from '@material-ui/core/styles';
+import { withStyles, WithStyles } from '@material-ui/core/styles';
 import styles from './PersonalPage.styles'
 import { 
   Card,
@@ -11,16 +8,15 @@ import {
   Button,
   Typography,
   CardMedia,
-  Link,
-  CircularProgress
+  Link
 } from '@material-ui/core';
-import { PersonalDataType } from '../../utils/type'
-import { CombinedState } from '../../utils/type'
+import { PersonalDataType, CombinedState } from '../../utils/type'
 import { db, storage } from '../../config'
 import React, { useState, useEffect, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { setPersonalData } from "../../actions/PersonalDataActions"
 import { placeholderPersonalData } from "../../reducers/PersonalDataReducers"
+import LoadingSpinner from "../../components/LoadingSpinner/LoadingSpinner"
 
 type Props = {} & WithStyles<typeof styles>;
 
@@ -47,8 +43,8 @@ const getProfilePicture = useCallback( (url:string) => {
     .catch((error) => console.log(error)) // Printing error in the console
   }, [profilePictureUrl])
   
-  const fetchPersonalData = useCallback( async() => {
-    const nameRef = db.ref().child('personalData')
+const fetchPersonalData = useCallback( async() => {
+  const nameRef = db.ref().child('personalData')
   setLoadingPersonalData(true)
   nameRef.on('value', snapshot => {
     const { photoUrl } = snapshot.val()
@@ -93,7 +89,7 @@ const calcAge = (dateString:Date) => {
 
 return (
   <div className={classes.wrapper} data-testid="personal-page-wrapper">
-    { loadingPersonalData && <CircularProgress disableShrink className={classes.spinner} /> }
+    <LoadingSpinner isLoading={loadingPersonalData} />
     { !loadingPersonalData &&
       <Card className={classes.root}>
         <CardActionArea>
@@ -104,9 +100,7 @@ return (
               title="Contemplative Reptile"
             />
           }
-          { !profilePictureUrl &&
-            <CircularProgress disableShrink className={classes.spinner} />
-          }
+          <LoadingSpinner isLoading={!profilePictureUrl} />
           <CardContent>
             <Typography gutterBottom variant="h5" component="h2" >
               {name}

@@ -8,8 +8,7 @@ const reducer = (
   action: ProductAction
 ): ProductType[] => {
   switch (action.type) {
-    case actionTypes.SET_PRODUCTS: 
-      debugger
+    case actionTypes.SET_PRODUCTS:
       const products: ProductType[] = action.payload
       return products
   }
