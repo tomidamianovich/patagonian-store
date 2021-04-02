@@ -1,8 +1,9 @@
 // Images Types
 
 export type ImageType = {
+  id: number,
   title: string,
-  url: string
+  url: string,
 }
 
 export type ImageState = ImageType[]

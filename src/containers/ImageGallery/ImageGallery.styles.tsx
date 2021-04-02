@@ -5,9 +5,17 @@ import {
 
 const styles = (theme: Theme) =>
   createStyles({
+    addImageForm: {
+      backgroundColor: '#f7f7f7',
+      padding: '1rem',
+      textAlign: 'center',
+      margin: '2rem auto',
+      width: '50%',
+      borderRadius: '1rem',
+      boxShadow: '0 0 6px 1px #a5a5a5'
+    },
     root: {
       flexGrow: 1,
-      width: '100%',
       margin: '1rem'
     },
     grid: {

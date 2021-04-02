@@ -1,13 +1,14 @@
 import React, { useState, useEffect, useCallback }  from 'react'
 import { withStyles, WithStyles } from '@material-ui/core/styles';
 import styles from './ImageGallery.styles'
-import { Grid, Button } from '@material-ui/core';
+import { Grid } from '@material-ui/core';
 import ImagesRow from '../../components/ImagesRow/ImagesRow'
 import { ImageType, CombinedState } from '../../utils/type'
 import { useSelector, useDispatch } from 'react-redux'
 import { db, storage } from '../../config'
 import { setImages } from "../../actions/ImageActions"
 import LoadingSpinner from "../../components/LoadingSpinner/LoadingSpinner"
+import AddImage from "../../components/AddImage/AddImage"
 
 type Props = WithStyles<typeof styles>;
 
@@ -55,7 +56,10 @@ const ImageGallery: React.FC<Props> = ({
 
 	const fetchImagesData = useCallback(async() => {
 		const nameRef= db.ref().child('images')
-		nameRef.on('value', snapshot => getImagesFromStorage(snapshot.val()))
+		nameRef.on('value', snapshot => {
+			const images = snapshot.val().filter((img:ImageType) => img)
+			getImagesFromStorage(images)
+		})
 	}, [getImagesFromStorage])
 
 	useEffect(() => {
@@ -66,11 +70,20 @@ const ImageGallery: React.FC<Props> = ({
 		}
 	}, [fetchImagesData, images, loadingImages])
 
+	const getIndexValue = () => {
+		if (!images.length) return 0
+		var greatherId = -Infinity
+		images.forEach(image => {
+      if(image.id > greatherId) {
+				greatherId = image.id
+			}
+   	});
+   	return greatherId+1;
+	}
+
 	return (
 		<div className={classes.root}>
-			<Button size="small">
-				Add Image
-			</Button>
+			<AddImage lastIndex={getIndexValue()}/>
 			{ !loadingImages && 
 				<Grid container spacing={1} className={classes.grid}>
 					{ imagesToChunks(images).map((image:ImageType[], index) => 
