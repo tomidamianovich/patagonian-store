@@ -66,3 +66,12 @@ Although the structure of the project is not a single answer question and that t
   The application will start and showed in the browser, you can use:
    1. Local Development build (The one that is automatically opened) Example: http://localhost:[port]
    2. Network Url, Example: http://192.168.0.49:[port]
+
+# How to run all the test
+  1. Open a new terminal in your repositories folder
+  2. run "npm run test"
+
+# How to run an specific test
+  1. Open a new terminal in your repositories folder
+  2. run "npm run test <ComponentName>"
+  Example npm run test Header
